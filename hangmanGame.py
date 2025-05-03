@@ -2,6 +2,7 @@ import random
 import pymysql
 
 print('start')
+print()
 
 #DB 개인정보
 conn = pymysql.connect(
