@@ -3,6 +3,7 @@ import pymysql
 
 print('start')
 print()
+print()
 
 #DB 개인정보
 conn = pymysql.connect(
