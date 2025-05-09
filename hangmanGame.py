@@ -31,11 +31,6 @@ rows = curs.fetchall()
 word_list = [row[0] for row in rows] #데이터를 받아오는 리스트
 print(word_list)
 
-# 연결 종료
-curs.close()
-conn.close()
-
-
 
 words = []
 
@@ -101,6 +96,52 @@ print("<HangMan Game>")
 
 while True :
 
+	choiceMode = input("게임플레이(1)/단어추가(2) 중 선택해주세요. >> ")
+	if int(choiceMode) == 1 :
+		words = word_list
+		wordG = words[choseWord()]
+		break
+
+	elif int(choiceMode) == 2 :
+		#DB에 단어 추가
+		insertWords = []
+		insertString = ""
+
+		while True :
+			insertWords.append(input("추가하고 싶은 단어를 입력해주세요.(단어 입력을 멈추고 싶다면 @를 입력하세요.) >> "))
+			#단어효용성검사 필요
+			if insertWords[len(insertWords)-1] == "@" :
+				break
+		
+		# 입력쿼리 만들기
+		insertQuery = "INSERT INTO wordlist VALUES "
+		for j in range(len(insertWords)-1) :
+			print(insertWords[j])
+			insertQuery += "({0}, '{1}')".format(len(word_list)+j+1, insertWords[j])
+
+		# 쿼리 execute
+		print(insertQuery)
+		curs.execute(insertQuery)
+
+		# 쿼리 작동확인 및 리스트 다시 업뎃
+		curs.execute("SELECT word FROM wordlist")
+		rows = curs.fetchall()
+		word_list = [row[0] for row in rows] #데이터를 받아오는 리스트
+		print(word_list)
+		
+		print("단어추가 완료")
+		continue
+	else :
+		print("잘못된 입력값입니다.")
+		continue
+
+# DB 연결 최종종료
+curs.close()
+conn.close()
+
+"""
+while True :
+
 	choiceWord = input("개인단어(1)/내장단어(2) 중 선택해주세요. >> ")
 	if int(choiceWord) == 2 :
 		words = word_list
@@ -113,6 +154,7 @@ while True :
 	else :
 		print("잘못된 입력값입니다.")
 		continue
+"""
 
 goalScore = len(wordG)
 
@@ -120,7 +162,7 @@ exStr = "x"*len(wordG)
 
 def Screen(wordQ, delStr) : #wordQ - apple
 
-	global  exStr
+	global exStr
 	global presentScore
 
 	seq = 0
